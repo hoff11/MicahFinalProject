@@ -9,12 +9,14 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
 {
     public class AccountController : Controller
     {
-        private DataProcessor.StudentProcessor studentProcessor;
+        private StudentProcessor studentProcessor;
         private string sqlConnection;
+        private ClassProcessor classProcessor;
 
         public AccountController()
         {
             studentProcessor = new StudentProcessor();
+            classProcessor = new ClassProcessor();
             sqlConnection = System.Configuration.ConfigurationManager.ConnectionStrings["LocalPC"].ConnectionString;
         }
 
@@ -112,6 +114,54 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
                 return View();
             }
 
+        }
+        private List<Models.Classes> SelectAllClasses()
+        {
+            //You can return an object for View data using a class in the DLL,
+            List<Class> dataClasses = classProcessor.Select(sqlConnection);
+
+            //BUT you can also create an MVC data model, which decouples the requierment of a DLL (could switch to a XML or JSON file later!)
+            Models.Classes objClasses;
+            List<Models.Classes> classes = new List<Models.Classes>();
+            foreach (var row in dataClasses)
+            {
+                objClasses = new Models.Classes(row.ClassId, row.ClassName, row.ClassDate, row.ClassDescription);
+                classes.Add(objClasses);
+            }
+            return classes;
+        }
+        private Models.Classes SelectOneClass(int id)
+        {
+            var objOneClass = new object();
+            foreach (var item in SelectAllClasses())
+            {
+                if (item.ClassId == id) objOneClass = item;
+            }
+            return (Models.Classes)objOneClass;
+        }
+        
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(int id, FormCollection collection)
+        {
+            ViewData["Error"] = "";
+            try
+            {
+                classProcessor.Insert(sqlConnection
+                    , int.Parse(collection["ClassId"])
+                    , id);
+                return RedirectToAction("MyClasses", "Account", new { id = id});
+            }
+            catch (Exception e)
+            {
+                ViewData["error"] = e.Message;
+                return View();
+            }
         }
 
     }
