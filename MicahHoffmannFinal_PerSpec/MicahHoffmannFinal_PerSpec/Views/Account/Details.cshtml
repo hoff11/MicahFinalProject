@@ -1,0 +1,49 @@
+﻿@model MicahHoffmannFinal_PerSpec.Models.Student
+@{
+    ViewBag.Title = "Details";
+}
+@{
+    string Error = "";
+    if (ViewBag.Error != "") { Error = ViewBag.Error; }
+}
+<h2>Student Details</h2>
+
+<div>
+    <h4>Student ID: @Model.StudentID</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StudentName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StudentName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StudentEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StudentEmail)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StudentLogin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StudentLogin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StudentPassword)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StudentPassword)
+        </dd>
+
+    </dl>
+</div>
+

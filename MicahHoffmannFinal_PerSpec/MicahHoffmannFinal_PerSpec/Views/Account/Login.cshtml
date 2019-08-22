@@ -1,0 +1,45 @@
+﻿@model MicahHoffmannFinal_PerSpec.Models.Student
+@{
+    ViewBag.Title = "Login";
+}
+@{
+    string Error = "";
+    if (ViewBag.Error != "") { Error = ViewBag.Error; }
+}
+<h2>Request Account</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Login</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StudentLogin, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.StudentLogin, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.StudentLogin, "", new { @class = "text-dange" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StudentPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.StudentPassword, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.StudentPassword, "", new { @class = "text-dange" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Login" class="btn btn-default" />
+            </div>
+        </div>
+
+        <div><p class="text-danger">@Error</p></div>
+    </div>
+}
+
+

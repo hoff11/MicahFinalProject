@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataProcessor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,7 +14,7 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
 
         public AccountController()
         {
-            studentProcessor = new DataProcessor.StudentProcessor();
+            studentProcessor = new StudentProcessor();
             sqlConnection = System.Configuration.ConfigurationManager.ConnectionStrings["LocalPC"].ConnectionString;
         }
 
@@ -47,5 +48,71 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
                 return View();
             }
         }
+        private List<Models.Student> SelectAllStudents()
+        {
+            //You can return an object for View data using a class in the DLL,
+            List<Student> lstRows = studentProcessor.Select(sqlConnection);
+
+            //BUT you can also create an MVC data model, which decouples the requierment of a DLL (could switch to a XML or JSON file later!)
+            Models.Student objStudent;
+            List<Models.Student> lstStudents = new List<Models.Student>();
+            foreach (var row in lstRows)
+            {
+                objStudent = new Models.Student(row.StudentID, row.StudentName, row.StudentEmail, row.StudentLogin, row.StudentPassword);
+                lstStudents.Add(objStudent);
+            }
+            return lstStudents;
+        }
+
+        private Models.Student SelectOneStudents(int id)
+        {
+            var objOneStudent = new object();
+            foreach (var item in SelectAllStudents())
+            {
+                if (item.StudentID == id) objOneStudent = item;
+            }
+            return (Models.Student)objOneStudent;
+        }
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Login(FormCollection collection)
+        {
+            ViewData["Error"] = "";
+            try
+            {
+                var studentId = studentProcessor.Login(sqlConnection
+                    , collection["StudentLogin"]
+                    , collection["StudentPassword"]);
+
+                return RedirectToAction("Details", new { id = studentId});
+            }
+            catch (Exception e)
+            {
+                ViewData["error"] = e.Message;
+                return View();
+            }
+        }
+        
+
+        public ActionResult Details(int id)
+        {
+            ViewData["Error"] = "";
+            try
+            {
+                var student = SelectOneStudents(id);
+                return View(student);
+            }
+            catch (Exception e)
+            {
+                ViewData["error"] = e.Message;
+                return View();
+            }
+
+        }
+
     }
 }
