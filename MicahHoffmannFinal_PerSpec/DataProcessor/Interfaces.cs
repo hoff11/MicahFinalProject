@@ -29,4 +29,15 @@ namespace DataProcessor
     public interface IClassProcessor
     {
     }
+
+    public interface IStudentClass
+    {
+        int ClassID { get; set; }
+        string ClassName { get; set; }
+        string ClassDescription { get; set; }
+        DateTime ClassDate { get; set; }
+        int StudentID { get; set; }
+        string StudentName { get; set; }
+        string StudentEmail { get; set; }
+    }
 }

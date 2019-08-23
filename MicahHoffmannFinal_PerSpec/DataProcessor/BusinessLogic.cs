@@ -90,7 +90,7 @@ namespace DataProcessor
                 {
                     connection.Open();
                     command.ExecuteNonQuery();
-                    if ((int)command.Parameters["@RC"].Value < 0) { throw ( new Exception("An internal problem was reported by the stored procedure: " + command.Parameters["@RC"].Value.ToString())); } 
+                    if ((int)command.Parameters["@RC"].Value < 0) { throw (new Exception("An internal problem was reported by the stored procedure: " + command.Parameters["@RC"].Value.ToString())); }
                 }
                 catch { throw; }
                 finally { connection.Close(); }
@@ -169,7 +169,7 @@ namespace DataProcessor
                     connection.Open();
                     command.ExecuteNonQuery();
                     if ((int)command.Parameters["@RC"].Value < 0) { throw (new Exception("An internal problem was reported by the stored procedure: " + command.Parameters["@RC"].Value.ToString())); }
-                    
+
                 }
                 catch { throw; }
                 finally { connection.Close(); }
@@ -178,26 +178,26 @@ namespace DataProcessor
             catch (Exception)
             {
                 throw;
-            }            
+            }
         }
 
     }
 
-    public class Class
+    public class Class : IClass
     {
-        private int _ClassId;
+        private int _ClassID;
         private string _ClassName;
         private DateTime _ClassDate;
         private string _ClassDescription;
 
-        public Class(int ClassId, string ClassName, DateTime ClassDate, string ClassDescription)
+        public Class(int ClassID, string ClassName, DateTime ClassDate, string ClassDescription)
         {
-            this.ClassId = ClassId;
+            this.ClassID = ClassID;
             this.ClassName = ClassName;
             this.ClassDate = ClassDate;
             this.ClassDescription = ClassDescription;
         }
-        public int ClassId { get => _ClassId; set => _ClassId = value; }
+        public int ClassID { get => _ClassID; set => _ClassID = value; }
         public string ClassName { get => _ClassName; set => _ClassName = value; }
         public DateTime ClassDate { get => _ClassDate; set => _ClassDate = value; }
         public string ClassDescription { get => _ClassDescription; set => _ClassDescription = value; }
@@ -298,24 +298,106 @@ namespace DataProcessor
                 throw;
             }
         }
-        public int MyClasses(string ConnectionString, int StudentId)
+    }
+    public class StudentClass : IStudentClass
+    {
+        private int _ClassID;
+        private string _ClassName;
+        private DateTime _ClassDate;
+        private string _ClassDescription;
+        private int _StudentID;
+        private string _StudentName;
+        private string _StudentEmail;
+
+        public StudentClass(int ClassID, string ClassName, DateTime ClassDate, string ClassDescription, int StudentID, string StudentEmail, string StudentName)
+        {
+            this.ClassID = ClassID;
+            this.ClassName = ClassName;
+            this.ClassDate = ClassDate;
+            this.ClassDescription = ClassDescription;
+            this.StudentID = StudentID;
+            this.StudentEmail = StudentEmail;
+            this.StudentName = StudentName;
+        }
+        public int ClassID { get => _ClassID; set => _ClassID = value; }
+        public string ClassName { get => _ClassName; set => _ClassName = value; }
+        public DateTime ClassDate { get => _ClassDate; set => _ClassDate = value; }
+        public string ClassDescription { get => _ClassDescription; set => _ClassDescription = value; }
+        public int StudentID { get => _StudentID; set => _StudentID = value; }
+        public string StudentName { get => _StudentName; set => _StudentName = value; }
+        public string StudentEmail { get => _StudentEmail; set => _StudentEmail = value; }
+
+    }
+
+    public class StudentClassProcessor
+    {
+        private void SetupParameters(ref SqlCommand command)
+        {
+            //SqlParameter param0 = new SqlParameter();
+            //param0.Direction = System.Data.ParameterDirection.ReturnValue;
+            //param0.ParameterName = "@RC";
+            //param0.SqlDbType = System.Data.SqlDbType.Int;
+            //command.Parameters.Add(param0);
+
+            //SqlParameter param1 = new SqlParameter();
+            //param1.Direction = System.Data.ParameterDirection.Input;
+            //param1.ParameterName = "@ClassId";
+            //param1.SqlDbType = System.Data.SqlDbType.Int;
+            //command.Parameters.Add(param1);
+
+            SqlParameter param2 = new SqlParameter();
+            param2.Direction = System.Data.ParameterDirection.Input;
+            param2.ParameterName = "@StudentId";
+            param2.SqlDbType = System.Data.SqlDbType.Int;
+            command.Parameters.Add(param2);
+
+            //SqlParameter param3 = new SqlParameter();
+            //param3.Direction = System.Data.ParameterDirection.Input;
+            //param3.ParameterName = "@StudentEmail";
+            //param3.SqlDbType = System.Data.SqlDbType.NVarChar;
+            //param3.Size = 100;
+            //command.Parameters.Add(param3);
+
+            //SqlParameter param4 = new SqlParameter();
+            //param4.Direction = System.Data.ParameterDirection.Input;
+            //param4.ParameterName = "@StudentLogin";
+            //param4.SqlDbType = System.Data.SqlDbType.NVarChar;
+            //param4.Size = 50;
+            //command.Parameters.Add(param4);
+
+            //SqlParameter param5 = new SqlParameter();
+            //param5.Direction = System.Data.ParameterDirection.Input;
+            //param5.ParameterName = "@StudentPassword";
+            //param5.SqlDbType = System.Data.SqlDbType.NVarChar;
+            //param5.Size = 50;
+            //command.Parameters.Add(param5);
+
+        }
+        public List<StudentClass> StudentClasses(string ConnectionString, int StudentId)
         {
             try
             {
                 SqlConnection connection = new SqlConnection(ConnectionString);
                 SqlCommand command = new SqlCommand("pSelClassesByStudentId", connection);
+
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                SetupParameters(ref command);
+                SqlParameter param1 = new SqlParameter();
+                param1.Direction = System.Data.ParameterDirection.Input;
+                param1.ParameterName = "@StudentId";
+                param1.SqlDbType = System.Data.SqlDbType.Int;
+                command.Parameters.Add(param1);
                 command.Parameters["@StudentId"].Value = StudentId;
-                try
+
+                connection.Open();
+                System.Data.IDataReader data = command.ExecuteReader();
+                List<StudentClass> studentClasses = new List<StudentClass>();
+                while (data.Read())
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    if ((int)command.Parameters["@RC"].Value < 0) { throw (new Exception("An internal problem was reported by the stored procedure: " + command.Parameters["@RC"].Value.ToString())); }
+                    StudentClass sc = new StudentClass((int)data["ClassId"], (string)data["ClassName"], (DateTime)data["ClassDate"], (string)data["ClassDescription"], (int)data["StudentID"], (string)data["StudentEmail"], (string)data["StudentName"]);
+                    studentClasses.Add(sc);
                 }
-                catch { throw; }
-                finally { connection.Close(); }
-                return (int)command.Parameters["@RC"].Value;
+                connection.Close();
+                return studentClasses;
             }
             catch (Exception)
             {
@@ -323,4 +405,5 @@ namespace DataProcessor
             }
         }
     }
+
 }

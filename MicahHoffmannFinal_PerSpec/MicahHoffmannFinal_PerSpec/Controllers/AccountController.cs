@@ -1,4 +1,5 @@
 ﻿using DataProcessor;
+using MicahHoffmannFinal_PerSpec.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
         private StudentProcessor studentProcessor;
         private string sqlConnection;
         private ClassProcessor classProcessor;
+        private StudentClassProcessor studentClassProcessor;
 
         public AccountController()
         {
             studentProcessor = new StudentProcessor();
             classProcessor = new ClassProcessor();
+            studentClassProcessor = new StudentClassProcessor();
             sqlConnection = System.Configuration.ConfigurationManager.ConnectionStrings["LocalPC"].ConnectionString;
         }
 
@@ -53,8 +56,7 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
         private List<Models.Student> SelectAllStudents()
         {
             //You can return an object for View data using a class in the DLL,
-            List<Student> lstRows = studentProcessor.Select(sqlConnection);
-
+            List<DataProcessor.Student> lstRows = studentProcessor.Select(sqlConnection);
             //BUT you can also create an MVC data model, which decouples the requierment of a DLL (could switch to a XML or JSON file later!)
             Models.Student objStudent;
             List<Models.Student> lstStudents = new List<Models.Student>();
@@ -65,7 +67,6 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
             }
             return lstStudents;
         }
-
         private Models.Student SelectOneStudents(int id)
         {
             var objOneStudent = new object();
@@ -79,7 +80,6 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public ActionResult Login(FormCollection collection)
         {
@@ -98,8 +98,6 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
                 return View();
             }
         }
-        
-
         public ActionResult Details(int id)
         {
             ViewData["Error"] = "";
@@ -125,7 +123,7 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
             List<Models.Classes> classes = new List<Models.Classes>();
             foreach (var row in dataClasses)
             {
-                objClasses = new Models.Classes(row.ClassId, row.ClassName, row.ClassDate, row.ClassDescription);
+                objClasses = new Models.Classes(row.ClassID, row.ClassName, row.ClassDate, row.ClassDescription);
                 classes.Add(objClasses);
             }
             return classes;
@@ -140,6 +138,21 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
             return (Models.Classes)objOneClass;
         }
         
+        public ActionResult MyClasses(int StudentId)
+        {
+            List<DataProcessor.StudentClass> studentClasses = studentClassProcessor.StudentClasses(sqlConnection, StudentId);
+
+            //BUT you can also create an MVC data model, which decouples the requierment of a DLL (could switch to a XML or JSON file later!)
+            Models.StudentClass classes;
+            List<Models.StudentClass> myclasses = new List<Models.StudentClass>();
+            foreach (var row in studentClasses)
+            {
+                classes = new Models.StudentClass(row.ClassID, row.ClassName, row.ClassDate, row.ClassDescription, row.StudentID, row.StudentName,row.StudentEmail);
+                myclasses.Add(classes);
+            }
+            return View(myclasses);
+        }
+    
 
         public ActionResult Register()
         {
@@ -150,6 +163,7 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
         public ActionResult Register(int id, FormCollection collection)
         {
             ViewData["Error"] = "";
+            SelectAllClasses();
             try
             {
                 classProcessor.Insert(sqlConnection

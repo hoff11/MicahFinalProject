@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MicahHoffmannFinal_PerSpec.Models.Classes>
+﻿@model IEnumerable<MicahHoffmannFinal_PerSpec.Models.StudentClass>
 
 @{
     ViewBag.Title = "MyClasses";
@@ -12,7 +12,7 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ClassId)
+            @Html.DisplayNameFor(model => model.ClassID)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ClassName)
@@ -23,13 +23,22 @@
         <th>
             @Html.DisplayNameFor(model => model.ClassDescription)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StudentID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StudentName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StudentEmail)
+        </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.ClassId)
+            @Html.DisplayFor(modelItem => item.ClassID)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.ClassName)
@@ -40,6 +49,16 @@
         <td>
             @Html.DisplayFor(modelItem => item.ClassDescription)
         </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StudentID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StudentName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StudentEmail)
+        </td>
+
     </tr>
 }
 
