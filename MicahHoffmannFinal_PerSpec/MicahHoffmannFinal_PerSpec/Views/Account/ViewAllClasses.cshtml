@@ -1,0 +1,47 @@
+﻿@model IEnumerable<MicahHoffmannFinal_PerSpec.Models.Classes>
+
+@{
+    ViewBag.Title = "All Classes";
+}
+
+<h2>All Classes</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ClassId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClassName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClassDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClassDescription)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClassId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClassName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClassDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClassDescription)
+        </td>
+    </tr>
+}
+
+</table>
+
+<p>
+    @Html.ActionLink("Register for a class!", "Register", new { id = TempData["id"] })
+</p>

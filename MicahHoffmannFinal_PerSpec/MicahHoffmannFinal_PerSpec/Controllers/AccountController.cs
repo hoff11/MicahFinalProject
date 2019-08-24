@@ -33,7 +33,6 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public ActionResult RequestAccount(FormCollection collection)
         {
@@ -84,12 +83,12 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
         public ActionResult Login(FormCollection collection)
         {
             ViewData["Error"] = "";
+            
             try
             {
                 var studentId = studentProcessor.Login(sqlConnection
                     , collection["StudentLogin"]
                     , collection["StudentPassword"]);
-
                 return RedirectToAction("Details", new { id = studentId});
             }
             catch (Exception e)
@@ -101,6 +100,7 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
         public ActionResult Details(int id)
         {
             ViewData["Error"] = "";
+            TempData["id"] = id; 
             try
             {
                 var student = SelectOneStudents(id);
@@ -136,10 +136,10 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
                 if (item.ClassId == id) objOneClass = item;
             }
             return (Models.Classes)objOneClass;
-        }
-        
+        }     
         public ActionResult MyClasses(int StudentId)
         {
+            ViewData["id"] = StudentId;
             List<DataProcessor.StudentClass> studentClasses = studentClassProcessor.StudentClasses(sqlConnection, StudentId);
 
             //BUT you can also create an MVC data model, which decouples the requierment of a DLL (could switch to a XML or JSON file later!)
@@ -152,24 +152,21 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
             }
             return View(myclasses);
         }
-    
-
         public ActionResult Register()
         {
             return View();
         }
-
         [HttpPost]
         public ActionResult Register(int id, FormCollection collection)
         {
             ViewData["Error"] = "";
-            SelectAllClasses();
+            ViewData["id"] = id;
             try
             {
                 classProcessor.Insert(sqlConnection
                     , int.Parse(collection["ClassId"])
                     , id);
-                return RedirectToAction("MyClasses", "Account", new { id = id});
+                return RedirectToAction("MyClasses", "Account", new { StudentId = id});
             }
             catch (Exception e)
             {
@@ -177,6 +174,10 @@ namespace MicahHoffmannFinal_PerSpec.Controllers
                 return View();
             }
         }
-
+        public ActionResult ViewAllClasses()
+        {
+            var classes = SelectAllClasses();
+            return View(classes);
+        }
     }
 }

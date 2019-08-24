@@ -4,11 +4,12 @@
     ViewBag.Title = "MyClasses";
 }
 
-<h2>MyClasses</h2>
+<h2>My Classes</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+
 <table class="table">
     <tr>
         <th>
@@ -35,31 +36,31 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClassID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClassName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClassDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClassDescription)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StudentID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StudentName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StudentEmail)
-        </td>
-
-    </tr>
-}
-
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentName)
+            </td> 
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentEmail)
+            </td>
+        </tr>
+    }
 </table>
+@Html.ActionLink("My Account", "Details", new { id = ViewData["id"] })
